@@ -298,12 +298,13 @@ As last step, the original point cloud will be clipped with the convex full shap
 
 This laz-file can then be visualized for example in cloud-compare and displayed along with the original point cloud from which it was extracted. In some cases, some additional fine-tuning could be conducted to make sure that the point clouds is really complete and at the same time does not contain any points belonging to another tree. Given that the clipping of the original point cloud is currently only conducted using a 2D convex hull, the results are not optimal.
 
-As shown in Figure 4, the tree model looks quite plausible, but there are also clearly some parts where the point cloud was not cut perfectly (Figure 5). 
+As shown in Figure 4, the tree model looks quite plausible, but there are also clearly some parts where the point cloud was not cut perfectly (Figure 5 + 6). 
 
-![Figure 4](Figure_04.png)
+![Figure 4](Figure_03.png)
 
-![Figure 5](Figure_05.png)
+![Figure 5](Figure_04.png)
 
+![Figure 6](Figure_05.png)
 
 ### Points to be improved + next steps:
 
