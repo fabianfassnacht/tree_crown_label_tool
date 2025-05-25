@@ -3,7 +3,6 @@ library(data.table)
 library(png)
 require(rgl)
 require(sp)
-library(rgeos)
 
 # --- Slice Extraction ---
 extract_slice <- function(las, center, angle_deg, thickness = 0.5) {
@@ -39,11 +38,14 @@ extract_slice <- function(las, center, angle_deg, thickness = 0.5) {
 
 # --- Parameters ---
 
-path_to_file <- ("E:/00_FUB_HP/98_Forschung/65_single_tree_extraction_2D_CNN/clip_3.laz")
-filen <- basename(path_to_file)
+# select next tree (for each tree increase fnr by 1)
+fnr=1
 
-las <- readLAS(path_to_file)
-las <- filter_poi(las, runif(npoints(las)) < 0.5)
+path_to_file <- list.files("D:/Tree_PCs", pattern=".laz", full.names = T)
+filen <- basename(path_to_file[fnr])
+
+las1 <- readLAS(path_to_file[fnr])
+las <- filter_poi(las1, runif(npoints(las1)) < 0.25)
 
 # check whether las file contains data
 if (is.empty(las)) stop("LAS file is empty")
@@ -60,12 +62,12 @@ zmax <- zmin + 30
 #### 
 
 # define thickness of transect views
-slice_thickness <- 0.75
+slice_thickness <- 1.25
 
 # define size of and steps of transects cuts through point cloud (in degree steps)
 # more angles means more slices to interpret per tree => will potentially be more accurate but also
 # more work 
-steps = 45
+steps = 36
 angle <- seq(0,360-steps,steps)  # degrees
 
 
@@ -81,9 +83,9 @@ for (i in 1:length(angle)){
   slice_df <- extract_slice(las, center, angle[i], slice_thickness)
   xlim_range <- range(slice_df$x_proj)
   ylim_range <- c(zmin, zmax)
-
+  
   # define folder to save temporary images  
-  setwd("E:/00_FUB_HP/98_Forschung/65_single_tree_extraction_2D_CNN/test")
+  setwd("D:/Tree_PCs_hulls")
   
   png("slice_plot.png", width = 800, height = 1200)
   # Margins area
@@ -92,6 +94,10 @@ for (i in 1:length(angle)){
   plot(slice_df$z ~ slice_df$x_proj,
        col = slice_df$col, pch = 16, cex = 0.3,
        xlab = "x'", ylab = "Z", xlim = xlim_range, ylim = ylim_range)
+  abline(v=0)
+  abline(v=5)
+  abline(v=-5)
+  
   dev.off()
   
   # --- Step 2: Display PNG in Correct Coordinate System ---
@@ -123,8 +129,8 @@ for (i in 1:length(angle)){
     coords_tree[[i]] <- coords_3D
     print(paste0("Completed ", i, "th transect view"))
   }
-
-
+  
+  
 }
 
 
@@ -139,7 +145,7 @@ hull <- LAS(coords_fin)
 plot(hull)
 
 # save hull fil
-writeLAS(hull, "hull.laz")
+writeLAS(hull, paste0("hull_" , filen))a
 
 
 
@@ -153,9 +159,10 @@ hull_polygon <- SpatialPolygons(list(Polygons(list(Polygon(hull_coords2)), ID = 
 #hull_polygon2 <- gBuffer(hull_polygon, width = 0.1)
 
 # Clip the first point cloud using the convex hull polygon
-crs(hull_polygon) <- crs(las)
-clipped <- clip_roi(las, hull_polygon)
+proj4string(hull_polygon) <- crs(las)
+
+clipped <- clip_roi(las1, hull_polygon)
 
 # write to file
-writeLAS(clipped, paste0("extracted_tree", filen))
+writeLAS(clipped, paste0("extr_tree_", filen))
 
