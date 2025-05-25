@@ -247,9 +247,9 @@ Now we are set to start the labeling - we first create an empty list to store th
 	  
 	}
 
-As shown in Figure 1, the labeling is quite straightforward. The user clicks into the graph to set points which enclose the silhouette of the tree. Once all points have been set, the user should press "**esc**"-button and the selected points will appear in the graph. Then the next slice will be obtained and the user again sets the points to define the silhouette. After the 2D-transects of all angles have been labeled, the loop stops and the user runs the next lines of code.
+As shown in Figure 1, the labeling is quite straightforward. The user clicks into the graph to set points which enclose the silhouette of the tree. Once all points have been set, the user should press "**esc**"-button and the selected points will appear in the graph. Then the next slice will be obtained and the user again sets the points to define the silhouette. After the 2D-transects of all angles have been labeled, the loop stops and the user runs the next lines of code. The vertical lines shown in Figure 1 are meant to help with orientation and mark the center of the slice (where the tree stem is supposed to be) as well as parallel lines at 5 m distance to the left and right of the center line.
 
-![Figure 1](Figure_1.png)
+![Figure 1](Figure_01.png)
 
 Here, the points set during each of the iterations will first be merged:
 
